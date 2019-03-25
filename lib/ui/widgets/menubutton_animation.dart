@@ -61,7 +61,6 @@ class MenuButtonAnimation extends StatelessWidget {
 
   Widget _buildAnimation(BuildContext context, Widget child) {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
 
     return Transform(
         alignment: FractionalOffset.center,
@@ -69,10 +68,6 @@ class MenuButtonAnimation extends StatelessWidget {
           ..rotateZ(m.radians(buttonRotateAnimation.value))
           ..scale(buttomZoomOut.value),
         child: _buildButton(160, 160));
-
-//    return Transform.rotate(
-//        angle: m.radians(buttonRotateAnimation.value),
-//        child: _buildButton(buttomZoomOut.value, buttomZoomOut.value));
   }
 
   @override
@@ -94,6 +89,7 @@ class MenuButtonAnimation extends StatelessWidget {
       fillColor: WugColors.greyBlue,
       splashColor: WugColors.lightBlue,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      onPressed: () {},
       child: Container(
         width: width,
         height: height,

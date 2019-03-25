@@ -39,8 +39,6 @@ class MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-
     return Scaffold(
       backgroundColor: WugColors.darkBlue,
       body: Stack(

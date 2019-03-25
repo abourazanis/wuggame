@@ -4,7 +4,7 @@ import 'package:wug_game/ui/main_screen.dart';
 
 class Routes {
   var routes = <String, WidgetBuilder>{
-    "/": (BuildContext context) => new MainScreen(),
-    "/game": (BuildContext context) => new GameScreen()
+    "/": (BuildContext context) => MainScreen(),
+    "/game": (BuildContext context) => GameScreen()
   };
 }

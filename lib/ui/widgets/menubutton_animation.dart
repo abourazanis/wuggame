@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as m;
 import 'package:wug_game/ui/colors.dart';
+import 'package:wug_game/ui/game_screen.dart';
+import 'package:wug_game/ui/widgets/fadeout_route.dart';
 
 class MenuButtonAnimation extends StatelessWidget {
   MenuButtonAnimation({
     Key key,
     @required this.buttonController,
-    @required this.screenWidth,
-    @required this.screenHeight,
-    @required this.onPressed,
     @required this.title,
     @required this.subtitle,
     @required this.icon,
@@ -21,50 +20,66 @@ class MenuButtonAnimation extends StatelessWidget {
             parent: buttonController,
             curve: Interval(
               0.0,
-              0.19,
+              0.15,
               curve: Curves.decelerate,
             ),
           ),
         ),
         buttomZoomOut = Tween(
-          begin: 160.0,
-          end: 1000.0,
+          begin: 1.0,
+          end: 10.0,
         ).animate(
           CurvedAnimation(
             parent: buttonController,
             curve: Interval(
-              0.19,
+              0.15,
               0.99,
-              curve: Curves.linear,
+              curve: Curves.easeOutExpo,
             ),
           ),
         ),
+        moveAnimation = Tween<double>(begin: 0, end: 0.25).animate(
+            CurvedAnimation(
+                parent: buttonController,
+                curve: Interval(0.10, 0.20, curve: Curves.decelerate))),
+        opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+            CurvedAnimation(
+                parent: buttonController,
+                curve: Interval(0.15, 0.20, curve: Curves.ease))),
         super(key: key);
 
   final String title;
   final String subtitle;
   final Color iconColor;
   final IconData icon;
-  final GestureTapCallback onPressed;
-
-  final double screenWidth;
-  final double screenHeight;
 
   final AnimationController buttonController;
   final Animation buttonRotateAnimation;
   final Animation buttomZoomOut;
+  final Animation opacityAnimation;
+  final Animation moveAnimation;
 
   Widget _buildAnimation(BuildContext context, Widget child) {
-    return Transform.rotate(
-        angle: m.radians(buttonRotateAnimation.value),
-        child: _buildButton(buttomZoomOut.value, buttomZoomOut.value));
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+
+    return Transform(
+        alignment: FractionalOffset.center,
+        transform: Matrix4.translationValues(moveAnimation.value * width, 0, 0)
+          ..rotateZ(m.radians(buttonRotateAnimation.value))
+          ..scale(buttomZoomOut.value),
+        child: _buildButton(160, 160));
+
+//    return Transform.rotate(
+//        angle: m.radians(buttonRotateAnimation.value),
+//        child: _buildButton(buttomZoomOut.value, buttomZoomOut.value));
   }
 
   @override
   Widget build(BuildContext context) {
     buttonController.addListener(() {
       if (buttonController.isCompleted) {
-        print("animation finished");
+        Navigator.pushReplacement(context, FadeOutRoute(widget: GameScreen()));
       }
     });
     return new AnimatedBuilder(
@@ -76,11 +91,10 @@ class MenuButtonAnimation extends StatelessWidget {
 
   Widget _buildButton(double width, double height) {
     return RawMaterialButton(
-      onPressed: this.onPressed,
       fillColor: WugColors.greyBlue,
       splashColor: WugColors.lightBlue,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: SizedBox(
+      child: Container(
         width: width,
         height: height,
         child: Padding(
@@ -94,26 +108,26 @@ class MenuButtonAnimation extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                     fontSize: 15,
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(opacityAnimation.value),
                     fontWeight: FontWeight.normal),
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(0, 5.0, 0, 10.0),
                 height: 2,
                 width: 25,
-                color: this.iconColor,
+                color: this.iconColor.withOpacity(opacityAnimation.value),
               ),
               Text(
                 title,
                 style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(opacityAnimation.value),
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
               Icon(
                 this.icon,
-                color: this.iconColor,
+                color: this.iconColor.withOpacity(opacityAnimation.value),
                 size: 45,
               )
             ],

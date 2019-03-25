@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wug_game/ui/colors.dart';
+import 'package:wug_game/ui/utils.dart';
 import 'package:wug_game/ui/widgets/main_appbar.dart';
 import 'package:wug_game/ui/widgets/main_menubutton.dart';
 import 'package:wug_game/ui/widgets/menubutton_animation.dart';
@@ -21,7 +22,7 @@ class MainScreenState extends State<MainScreen>
   void initState() {
     super.initState();
     _menuButtonController = new AnimationController(
-        duration: new Duration(milliseconds: 1500), vsync: this);
+        duration: new Duration(milliseconds: 2500), vsync: this);
   }
 
   @override
@@ -33,105 +34,94 @@ class MainScreenState extends State<MainScreen>
   Future<Null> _playAnimation() async {
     try {
       await _menuButtonController.forward().orCancel;
-//      await _menuButtonController.reverse().orCancel;
     } on TickerCanceled {}
   }
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+
     return Scaffold(
       backgroundColor: WugColors.darkBlue,
       body: Stack(
         children: <Widget>[
-          AnimatedOpacity(
-            opacity: this.animationStatus ? 0.0 : 1.0,
-            duration: Duration(milliseconds: 500),
-            child: MainAppBar("Wug Game"),
-          ),
-          _buildMenu(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMenu(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    double screenWidth = mediaQueryData.size.width;
-    double screenHeight = mediaQueryData.size.height;
-
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: 25,
-          ),
-          AnimatedOpacity(
-            opacity: this.animationStatus ? 0.0 : 1.0,
-            duration: Duration(milliseconds: 500),
-            child: Icon(
-              FontAwesomeIcons.question,
-              color: WugColors.green,
-              size: 120,
+          Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                MainAppBar("Wug Game"),
+                SizedBox(height: screenAwareSize(20, context)),
+                Icon(
+                  FontAwesomeIcons.question,
+                  color: WugColors.green,
+                  size: screenAwareSize(120, context),
+                ),
+              ],
             ),
           ),
-          SizedBox(
-            height: 100,
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  top: animationStatus ? 0.0 : screenAwareSize(80, context)),
+              child: Wrap(
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                spacing: 20.0,
+                runSpacing: 20.0,
+                children: <Widget>[
+                  animationStatus
+                      ? MenuButtonAnimation(
+                          buttonController: this._menuButtonController.view,
+                          title: "Play",
+                          subtitle: "NEW GAME",
+                          icon: FontAwesomeIcons.gamepad,
+                          iconColor: WugColors.orange,
+                        )
+                      : MainMenuButton(
+                          onPressed: () {
+                            setState(() {
+                              animationStatus = true;
+                            });
+                            _playAnimation();
+                          },
+                          title: "Play",
+                          subtitle: "NEW GAME",
+                          icon: FontAwesomeIcons.gamepad,
+                          iconColor: WugColors.orange,
+                        ),
+                  MainMenuButton(
+                    onPressed: () {},
+                    title: "Settings",
+                    subtitle: "OPTIONS",
+                    icon: FontAwesomeIcons.cog,
+                    iconColor: WugColors.lightBlue,
+                    visible: !animationStatus,
+                  ),
+                  MainMenuButton(
+                    onPressed: () {},
+                    title: "About",
+                    subtitle: "INFORMATION",
+                    icon: FontAwesomeIcons.infoCircle,
+                    iconColor: WugColors.cyan,
+                    visible: !animationStatus,
+                  ),
+                  MainMenuButton(
+                    onPressed: () {},
+                    title: "Quit",
+                    subtitle: "EXIT",
+                    icon: FontAwesomeIcons.signOutAlt,
+                    iconColor: WugColors.lila,
+                    visible: !animationStatus,
+                  ),
+                ],
+              ),
+            ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              MenuButtonAnimation(
-                buttonController: this._menuButtonController.view,
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-                onPressed: () {
-                  setState(() {
-                    animationStatus = true;
-                  });
-                  _playAnimation();
-                },
-                title: "Play",
-                subtitle: "NEW GAME",
-                icon: FontAwesomeIcons.gamepad,
-                iconColor: WugColors.orange,
-              ),
-              MainMenuButton(
-                onPressed: () {},
-                title: "Settings",
-                subtitle: "OPTIONS",
-                icon: FontAwesomeIcons.cog,
-                iconColor: WugColors.lightBlue,
-                visible: !animationStatus,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              MainMenuButton(
-                onPressed: () {},
-                title: "About",
-                subtitle: "INFORMATION",
-                icon: FontAwesomeIcons.infoCircle,
-                iconColor: WugColors.cyan,
-                visible: !animationStatus,
-              ),
-              MainMenuButton(
-                onPressed: () {},
-                title: "Quit",
-                subtitle: "EXIT",
-                icon: FontAwesomeIcons.signOutAlt,
-                iconColor: WugColors.lila,
-                visible: !animationStatus,
-              ),
-            ],
-          )
         ],
       ),
     );

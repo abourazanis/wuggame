@@ -77,7 +77,7 @@ class MenuButtonAnimation extends StatelessWidget {
         Navigator.pushReplacement(context, FadeOutRoute(widget: GameScreen()));
       }
     });
-    return new AnimatedBuilder(
+    return AnimatedBuilder(
       builder: _buildAnimation,
       child: _buildButton(160, 160),
       animation: buttonController,

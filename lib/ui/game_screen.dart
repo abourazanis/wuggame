@@ -13,10 +13,12 @@ class GameScreen extends StatefulWidget {
 
 class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   AnimationController _screenController;
-  Animation<Color> fadeScreenAnimation;
-  Animation<double> containerGrowAnimation;
   AnimationController _listItemController;
+  AnimationController _listItemPositionController;
   bool animationComplete = false;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+
+  final phrases = ["Krypton", "Asgard", "Azeroth"];
 
   @override
   void initState() {
@@ -27,25 +29,8 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     _listItemController = new AnimationController(
         duration: new Duration(milliseconds: 1000), vsync: this);
 
-    fadeScreenAnimation = new ColorTween(
-      begin: WugColors.greyBlue,
-      end: WugColors.darkBlue,
-    ).animate(
-      new CurvedAnimation(
-        parent: _screenController,
-        curve: Curves.ease,
-      ),
-    );
-
-    containerGrowAnimation = new CurvedAnimation(
-      parent: _screenController,
-      curve: Curves.easeIn,
-    );
-
-    containerGrowAnimation.addListener(() {
-      this.setState(() {});
-    });
-    containerGrowAnimation.addStatusListener((AnimationStatus status) {});
+    _listItemPositionController = new AnimationController(
+        duration: new Duration(milliseconds: 600), vsync: this);
 
     _screenController.addListener(() {
       if (_screenController.isCompleted) {
@@ -62,12 +47,15 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _screenController.dispose();
+    _listItemController.dispose();
+    _listItemPositionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+    final Size screenSize = MediaQuery.of(context).size;
+    final double width = screenSize.width;
 
     return Scaffold(
         backgroundColor: WugColors.darkBlue,
@@ -80,34 +68,53 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             ),
             child: Stack(alignment: Alignment.center, children: <Widget>[
               AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                padding: EdgeInsets.only(
-                    top: animationComplete
-                        ? 0.0
-                        : screenAwareSize(150.0, context)),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    GameListItem(
-                      title: "Krypton",
-                      controller: _listItemController,
-                    ),
-                    SizedBox(height: screenAwareSize(15.0, context)),
-                    GameListItem(
-                        title: "Asgard", controller: _listItemController),
-                    SizedBox(height: screenAwareSize(15.0, context)),
-                    GameListItem(
-                      title: "Azeroth",
-                      controller: _listItemController,
-                    )
-                  ],
-                ),
-              ),
-              FadeContainer(
-                fadeScreenAnimation: fadeScreenAnimation,
-                containerGrowAnimation: containerGrowAnimation,
-              ),
+                  duration: Duration(milliseconds: 500),
+                  padding: EdgeInsets.only(
+                      top: animationComplete
+                          ? 0.0
+                          : screenAwareSize(150.0, context)),
+                  child: AnimatedList(
+                      key: _listKey,
+                      initialItemCount: phrases.length,
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      itemBuilder: (BuildContext context, int index,
+                          Animation animation) {
+                        return _buildPhrase(phrases[index], index, width);
+                      })),
+              FadeContainer(buttonController: _screenController),
             ])));
+  }
+
+  void selectPhrase(int index, double width) {
+    var phrase = phrases.removeAt(index);
+    _listKey.currentState.removeItem(
+      index,
+      (BuildContext context, Animation<double> animation) {
+        animation.addStatusListener((status) {
+          if (status == AnimationStatus.dismissed) {
+            _listItemPositionController.forward();
+          }
+        });
+        return SlideTransition(
+          position: Tween<Offset>(begin: Offset(1.0, 0.0), end: Offset.zero)
+              .animate(animation),
+          child: FadeTransition(
+            opacity:
+                CurvedAnimation(parent: animation, curve: Interval(0.0, 1.0)),
+            child: _buildPhrase(phrase, index, width),
+          ),
+        );
+      },
+      duration: Duration(milliseconds: 600),
+    );
+  }
+
+  Widget _buildPhrase(phrase, index, width) {
+    return GameListItem(
+      title: phrase,
+      controller: _listItemController,
+      positionController: _listItemPositionController,
+      onTap: index != null ? () => selectPhrase(index, width) : null,
+    );
   }
 }

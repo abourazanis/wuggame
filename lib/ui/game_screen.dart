@@ -3,6 +3,7 @@ import 'package:wug_game/ui/colors.dart';
 import 'package:wug_game/ui/utils.dart';
 import 'package:wug_game/ui/widgets/fade_container.dart';
 import 'package:wug_game/ui/widgets/game_listitem.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key key}) : super(key: key);
@@ -16,6 +17,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   AnimationController _listItemController;
   AnimationController _listItemPositionController;
   bool animationComplete = false;
+  bool answerSelected = false;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   final phrases = ["Krypton", "Asgard", "Azeroth"];
@@ -30,13 +32,21 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         duration: new Duration(milliseconds: 1000), vsync: this);
 
     _listItemPositionController = new AnimationController(
-        duration: new Duration(milliseconds: 600), vsync: this);
+        duration: new Duration(milliseconds: 500), vsync: this);
 
     _screenController.addListener(() {
       if (_screenController.isCompleted) {
         _listItemController.forward();
         this.setState(() {
           animationComplete = true;
+        });
+      }
+    });
+
+    _listItemPositionController.addListener(() {
+      if (_listItemPositionController.isCompleted) {
+        this.setState(() {
+          this.answerSelected = true;
         });
       }
     });
@@ -81,6 +91,35 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           Animation animation) {
                         return _buildPhrase(phrases[index], index, width);
                       })),
+              Center(
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 200),
+                  opacity: answerSelected ? 1.0 : 0.0,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 150,
+                        height: 150,
+                        child: FlareActor(
+                          "assets/flare/Wrong.flr",
+                          alignment: Alignment.center,
+                          fit: BoxFit.contain,
+                          animation: "Error",
+                        ),
+                      ),
+                      Text(
+                        "Krypton",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               FadeContainer(buttonController: _screenController),
             ])));
   }
@@ -105,7 +144,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           ),
         );
       },
-      duration: Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 500),
     );
   }
 

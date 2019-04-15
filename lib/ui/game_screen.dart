@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wug_game/ui/colors.dart';
 import 'package:wug_game/ui/utils.dart';
+import 'package:wug_game/ui/widgets/animated_wave.dart';
 import 'package:wug_game/ui/widgets/fade_container.dart';
+import 'package:wug_game/ui/widgets/game_animated_background.dart';
 import 'package:wug_game/ui/widgets/game_listitem.dart';
 import 'package:flare_flutter/flare_actor.dart';
+
+import 'package:simple_animations/simple_animations.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key key}) : super(key: key);
@@ -21,6 +25,8 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   final phrases = ["Krypton", "Asgard", "Azeroth"];
+
+  final pi = 3.14;
 
   @override
   void initState() {
@@ -68,29 +74,44 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     final double width = screenSize.width;
 
     return Scaffold(
-        backgroundColor: WugColors.darkBlue,
+        // backgroundColor: WugColors.darkBlue,
         body: Container(
             width: screenSize.width,
             height: screenSize.height,
-            padding: EdgeInsets.only(
-              left: screenAwareSize(25.0, context),
-              right: screenAwareSize(25.0, context),
-            ),
+            // padding: EdgeInsets.only(
+            //   left: screenAwareSize(25.0, context),
+            //   right: screenAwareSize(25.0, context),
+            // ),
             child: Stack(alignment: Alignment.center, children: <Widget>[
-              AnimatedContainer(
-                  duration: Duration(milliseconds: 500),
-                  padding: EdgeInsets.only(
-                      top: animationComplete
-                          ? 0.0
-                          : screenAwareSize(150.0, context)),
-                  child: AnimatedList(
-                      key: _listKey,
-                      initialItemCount: phrases.length,
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      itemBuilder: (BuildContext context, int index,
-                          Animation animation) {
-                        return _buildPhrase(phrases[index], index, width);
-                      })),
+              Positioned.fill(child: AnimatedBackground()),
+              onBottom(AnimatedWave(
+                height: 180,
+                speed: 1.0,
+              )),
+              onBottom(AnimatedWave(
+                height: 120,
+                speed: 0.9,
+                offset: pi,
+              )),
+              onBottom(AnimatedWave(
+                height: 220,
+                speed: 1.2,
+                offset: pi / 2,
+              )),
+              Positioned.fill(
+                child: Align(
+                    alignment: Alignment.center,
+                    child: AnimatedList(
+                        key: _listKey,
+                        shrinkWrap: true,
+                        initialItemCount: phrases.length,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 16.0, horizontal: 25.0),
+                        itemBuilder: (BuildContext context, int index,
+                            Animation animation) {
+                          return _buildPhrase(phrases[index], index, width);
+                        })),
+              ),
               Center(
                 child: AnimatedOpacity(
                   duration: Duration(milliseconds: 200),
@@ -156,4 +177,11 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       onTap: index != null ? () => selectPhrase(index, width) : null,
     );
   }
+
+  onBottom(Widget child) => Positioned.fill(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: child,
+        ),
+      );
 }

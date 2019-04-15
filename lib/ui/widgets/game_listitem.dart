@@ -64,6 +64,9 @@ class GameListItem extends StatelessWidget {
               opacity: positionAnimation.value > 0.0 ? 0 : 1,
               duration: Duration(milliseconds: 600),
               child: Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: screenAwareSize(10.0, context),
+                  ),
                   padding: EdgeInsets.fromLTRB(
                       screenAwareSize(20.0, context),
                       screenAwareSize(15.0, context),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:wug_game/ui/colors.dart';
 import 'package:wug_game/ui/utils.dart';
 import 'package:wug_game/ui/widgets/main_appbar.dart';
@@ -13,28 +14,17 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => new MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
-  AnimationController _menuButtonController;
+class MainScreenState extends State<MainScreen> {
   var animationStatus = false;
 
   @override
   void initState() {
     super.initState();
-    _menuButtonController = new AnimationController(
-        duration: new Duration(milliseconds: 2500), vsync: this);
   }
 
   @override
   void dispose() {
-    _menuButtonController.dispose();
     super.dispose();
-  }
-
-  Future<Null> _playAnimation() async {
-    try {
-      await _menuButtonController.forward().orCancel;
-    } on TickerCanceled {}
   }
 
   @override
@@ -74,7 +64,6 @@ class MainScreenState extends State<MainScreen>
                 children: <Widget>[
                   animationStatus
                       ? MenuButtonAnimation(
-                          buttonController: this._menuButtonController.view,
                           title: "Play",
                           subtitle: "NEW GAME",
                           icon: FontAwesomeIcons.gamepad,
@@ -85,7 +74,6 @@ class MainScreenState extends State<MainScreen>
                             setState(() {
                               animationStatus = true;
                             });
-                            _playAnimation();
                           },
                           title: "Play",
                           subtitle: "NEW GAME",

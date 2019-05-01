@@ -74,14 +74,9 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     final double width = screenSize.width;
 
     return Scaffold(
-        // backgroundColor: WugColors.darkBlue,
         body: Container(
             width: screenSize.width,
             height: screenSize.height,
-            // padding: EdgeInsets.only(
-            //   left: screenAwareSize(25.0, context),
-            //   right: screenAwareSize(25.0, context),
-            // ),
             child: Stack(alignment: Alignment.center, children: <Widget>[
               Positioned.fill(child: AnimatedBackground()),
               onBottom(AnimatedWave(
@@ -112,32 +107,35 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                           return _buildPhrase(phrases[index], index, width);
                         })),
               ),
-              Center(
-                child: AnimatedOpacity(
-                  duration: Duration(milliseconds: 200),
-                  opacity: answerSelected ? 1.0 : 0.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 150,
-                        height: 150,
-                        child: FlareActor(
-                          "assets/flare/Wrong.flr",
-                          alignment: Alignment.center,
-                          fit: BoxFit.contain,
-                          animation: "Error",
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 200),
+                    opacity: answerSelected ? 1.0 : 0.0,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 150,
+                          height: 150,
+                          child: FlareActor(
+                            "assets/flare/Wrong.flr",
+                            alignment: Alignment.center,
+                            fit: BoxFit.contain,
+                            animation: "Error",
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Krypton",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.white),
-                      )
-                    ],
+                        Text(
+                          "Krypton",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.white),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

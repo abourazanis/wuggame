@@ -57,43 +57,46 @@ class GameListItem extends StatelessWidget {
         return Transform(
           transform: Matrix4.translationValues(
               positionAnimation.value * width, 0.0, 0.0),
-          child: InkWell(
-            splashColor: WugColors.lightBlue,
-            onTap: this.onTap,
-            child: AnimatedOpacity(
-              opacity: positionAnimation.value > 0.0 ? 0 : 1,
-              duration: Duration(milliseconds: 600),
-              child: Container(
-                  margin: EdgeInsets.symmetric(
-                    vertical: screenAwareSize(10.0, context),
-                  ),
-                  padding: EdgeInsets.fromLTRB(
-                      screenAwareSize(20.0, context),
-                      screenAwareSize(15.0, context),
-                      screenAwareSize(20.0, context),
-                      screenAwareSize(15.0, context)),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: WugColors.lightBlue
-                              .withOpacity(borderAnimation.value),
-                          width: 3),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: screenAwareSize(20.0, context),
-                          )),
-                      Icon(
-                        FontAwesomeIcons.chevronRight,
-                        color: Colors.white,
-                        size: 20,
-                      )
-                    ],
-                  )),
+          child: Material(
+            color: WugColors.darkBlue,
+            elevation: 2,
+            shape: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                    color:
+                        WugColors.lightBlue.withOpacity(borderAnimation.value),
+                    width: 3.0,
+                    style: BorderStyle.solid)),
+            child: InkWell(
+              splashColor: WugColors.lightBlue,
+              onTap: this.onTap,
+              child: AnimatedOpacity(
+                opacity: positionAnimation.value > 0.0 ? 0 : 1,
+                duration: Duration(milliseconds: 600),
+                child: Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: screenAwareSize(10.0, context),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenAwareSize(10.0, context),
+                        horizontal: screenAwareSize(15.0, context)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenAwareSize(20.0, context),
+                            )),
+                        Icon(
+                          FontAwesomeIcons.chevronRight,
+                          color: Colors.white,
+                          size: 20,
+                        )
+                      ],
+                    )),
+              ),
             ),
           ),
         );

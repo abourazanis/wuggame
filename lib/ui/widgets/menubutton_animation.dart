@@ -28,7 +28,7 @@ class MenuButtonAnimation extends StatelessWidget {
                   ),
                   curve: Curves.easeOutExpo)
               .add(
-                  Duration(milliseconds: 800),
+                  Duration(milliseconds: 400),
                   Tween(
                     begin: 1.0,
                     end: 10.0,

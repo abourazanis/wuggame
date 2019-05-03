@@ -14,7 +14,7 @@ class MenuButtonAnimation extends StatelessWidget {
     this.iconColor = Colors.white,
   })  : tween = MultiTrackTween([
           Track("rotate").add(
-              Duration(milliseconds: 150),
+              Duration(milliseconds: 90),
               Tween<double>(
                 begin: 0.0,
                 end: 180.0,
@@ -22,26 +22,26 @@ class MenuButtonAnimation extends StatelessWidget {
               curve: Curves.decelerate),
           Track("zoomOut")
               .add(
-                  Duration(milliseconds: 150),
+                  Duration(milliseconds: 70),
                   ConstantTween(
                     1.0,
                   ),
                   curve: Curves.easeOutExpo)
               .add(
-                  Duration(milliseconds: 400),
+                  Duration(milliseconds: 200),
                   Tween(
                     begin: 1.0,
                     end: 10.0,
                   ),
                   curve: Curves.easeOutExpo),
           Track("position")
-              .add(Duration(milliseconds: 100), ConstantTween(0.0))
-              .add(Duration(milliseconds: 100),
+              .add(Duration(milliseconds: 90), ConstantTween(0.0))
+              .add(Duration(milliseconds: 90),
                   Tween<double>(begin: 0, end: 0.25),
                   curve: Curves.decelerate),
           Track("opacity")
-              .add(Duration(milliseconds: 150), ConstantTween(1.0))
-              .add(Duration(milliseconds: 50),
+              .add(Duration(milliseconds: 10), ConstantTween(1.0))
+              .add(Duration(milliseconds: 90),
                   Tween<double>(begin: 1.0, end: 0.0),
                   curve: Curves.ease),
         ]),

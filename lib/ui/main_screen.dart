@@ -41,7 +41,7 @@ class MainScreenState extends State<MainScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 MainAppBar("Wug Game"),
-                SizedBox(height: screenAwareSize(20, context)),
+                SizedBox(height: screenAwareSize(10, context)),
                 Icon(
                   FontAwesomeIcons.question,
                   color: WugColors.green,
@@ -54,7 +54,7 @@ class MainScreenState extends State<MainScreen> {
             alignment: Alignment.center,
             child: Padding(
               padding: EdgeInsets.only(
-                  top: animationStatus ? 0.0 : screenAwareSize(80, context)),
+                  top: animationStatus ? 20.0 : screenAwareSize(80, context)),
               child: Wrap(
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.start,

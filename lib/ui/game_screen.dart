@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wug_game/ui/colors.dart';
-import 'package:wug_game/ui/utils.dart';
+import 'package:wug_game/ui/widgets/animated_timer.dart';
 import 'package:wug_game/ui/widgets/animated_wave.dart';
 import 'package:wug_game/ui/widgets/fade_container.dart';
 import 'package:wug_game/ui/widgets/game_animated_background.dart';
 import 'package:wug_game/ui/widgets/game_listitem.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
-import 'package:simple_animations/simple_animations.dart';
 import 'package:wug_game/ui/widgets/game_topbar.dart';
 
 class GameScreen extends StatefulWidget {
@@ -18,10 +16,9 @@ class GameScreen extends StatefulWidget {
 }
 
 class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
-  AnimationController _screenController;
   AnimationController _listItemController;
   AnimationController _listItemPositionController;
-  bool animationComplete = false;
+
   bool answerSelected = false;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
@@ -32,23 +29,12 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _screenController = new AnimationController(
-        duration: new Duration(milliseconds: 1000), vsync: this);
 
     _listItemController = new AnimationController(
         duration: new Duration(milliseconds: 1000), vsync: this);
 
     _listItemPositionController = new AnimationController(
         duration: new Duration(milliseconds: 500), vsync: this);
-
-    _screenController.addListener(() {
-      if (_screenController.isCompleted) {
-        _listItemController.forward();
-        this.setState(() {
-          animationComplete = true;
-        });
-      }
-    });
 
     _listItemPositionController.addListener(() {
       if (_listItemPositionController.isCompleted) {
@@ -58,12 +44,11 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       }
     });
 
-    _screenController.forward();
+    _listItemController.forward();
   }
 
   @override
   void dispose() {
-    _screenController.dispose();
     _listItemController.dispose();
     _listItemPositionController.dispose();
     super.dispose();
@@ -98,16 +83,26 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
               Positioned.fill(
                 child: Align(
                     alignment: Alignment.center,
-                    child: AnimatedList(
-                        key: _listKey,
-                        shrinkWrap: true,
-                        initialItemCount: phrases.length,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 25.0),
-                        itemBuilder: (BuildContext context, int index,
-                            Animation animation) {
-                          return _buildPhrase(phrases[index], index, width);
-                        })),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(height: 120.0, child: AnimatedTimer()),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          AnimatedList(
+                              key: _listKey,
+                              shrinkWrap: true,
+                              initialItemCount: phrases.length,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 25.0),
+                              itemBuilder: (BuildContext context, int index,
+                                  Animation animation) {
+                                return _buildPhrase(
+                                    phrases[index], index, width);
+                              }),
+                        ])),
               ),
               Positioned.fill(
                 child: Align(
@@ -141,7 +136,6 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              FadeContainer(buttonController: _screenController),
             ])));
   }
 
@@ -170,11 +164,14 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildPhrase(phrase, index, width) {
-    return GameListItem(
-      title: phrase,
-      controller: _listItemController,
-      positionController: _listItemPositionController,
-      onTap: index != null ? () => selectPhrase(index, width) : null,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: GameListItem(
+        title: phrase,
+        controller: _listItemController,
+        positionController: _listItemPositionController,
+        onTap: index != null ? () => selectPhrase(index, width) : null,
+      ),
     );
   }
 

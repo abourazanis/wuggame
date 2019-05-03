@@ -9,7 +9,7 @@ class GameTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
         width: double.maxFinite,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -18,12 +18,12 @@ class GameTopBar extends StatelessWidget {
             Text("Score 100",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: screenAwareSize(12.0, context),
+                  fontSize: screenAwareSize(14.0, context),
                 )),
-            Text("LVL 2",
+            Text("Level 2",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: screenAwareSize(12.0, context),
+                  fontSize: screenAwareSize(20.0, context),
                 )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -32,17 +32,17 @@ class GameTopBar extends StatelessWidget {
                 Icon(
                   FontAwesomeIcons.heart,
                   color: Colors.white,
-                  size: 10,
+                  size: 12,
                 ),
                 Icon(
                   FontAwesomeIcons.heart,
                   color: Colors.white,
-                  size: 10,
+                  size: 12,
                 ),
                 Icon(
                   FontAwesomeIcons.heart,
                   color: Colors.white,
-                  size: 10,
+                  size: 12,
                 )
               ],
             )

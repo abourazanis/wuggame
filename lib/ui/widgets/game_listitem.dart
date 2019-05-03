@@ -59,7 +59,7 @@ class GameListItem extends StatelessWidget {
               positionAnimation.value * width, 0.0, 0.0),
           child: Material(
             color: WugColors.darkBlue,
-            elevation: 2,
+            elevation: 5,
             shape: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: BorderSide(

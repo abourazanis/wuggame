@@ -8,6 +8,7 @@ import 'package:wug_game/ui/widgets/game_listitem.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
 import 'package:simple_animations/simple_animations.dart';
+import 'package:wug_game/ui/widgets/game_topbar.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key key}) : super(key: key);
@@ -93,6 +94,7 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 speed: 1.2,
                 offset: pi / 2,
               )),
+              onTop(GameTopBar()),
               Positioned.fill(
                 child: Align(
                     alignment: Alignment.center,
@@ -179,6 +181,13 @@ class GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   onBottom(Widget child) => Positioned.fill(
         child: Align(
           alignment: Alignment.bottomCenter,
+          child: child,
+        ),
+      );
+
+  onTop(Widget child) => Positioned.fill(
+        child: Align(
+          alignment: Alignment.topCenter,
           child: child,
         ),
       );
